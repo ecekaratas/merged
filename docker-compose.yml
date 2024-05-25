@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  neo4j:
+    image: neo4j:latest
+    ports:
+      - "7687:7687"
+      - "7474:7474"
+    volumes:
+      - neo4j_data:/data
+    environment:
+      NEO4J_AUTH: neo4j/password
+
+  web:
+    build:
+      context: ./web
+    ports:
+      - "3000:3000"
+    depends_on:
+      - neo4j
+
+  flask:
+    build:
+      context: .
+      dockerfile: CS401_GithubAnalyzer/PY/Dockerfile
+    depends_on:
+      - web
+      - neo4j
+
+volumes:
+  neo4j_data:
