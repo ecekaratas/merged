@@ -10,7 +10,8 @@ services:
       - neo4j_data:/data
     environment:
       NEO4J_AUTH: neo4j/password
-
+    networks:
+      - app-network
   web:
     build:
       context: ./web
@@ -18,14 +19,25 @@ services:
       - "3000:3000"
     depends_on:
       - neo4j
+    networks:
+      - app-network
 
   flask:
     build:
       context: .
       dockerfile: CS401_GithubAnalyzer/PY/Dockerfile
+    ports:
+      - "5001:5001"
     depends_on:
       - web
       - neo4j
+    networks:
+      - app-network
+
 
 volumes:
   neo4j_data:
+
+networks:
+  app-network:
+    driver: bridge
